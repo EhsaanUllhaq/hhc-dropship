@@ -5,7 +5,13 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { isValidCardNumber, isValidCreditCardCVVOrCVC, isValidCreditCardExpirationDate, isValidEmailAddressFormat, isValidNameOrLastname } from "@/lib/utils";
+import {
+  isValidCardNumber,
+  isValidCreditCardCVVOrCVC,
+  isValidCreditCardExpirationDate,
+  isValidEmailAddressFormat,
+  isValidNameOrLastname,
+} from "@/lib/utils";
 
 const CheckoutPage = () => {
   const [checkoutForm, setCheckoutForm] = useState({
@@ -160,8 +166,6 @@ const CheckoutPage = () => {
     });
   };
 
-  
-
   useEffect(() => {
     if (products.length === 0) {
       toast.error("You don't have items in your cart");
@@ -207,7 +211,11 @@ const CheckoutPage = () => {
                   className="flex items-start space-x-4 py-6"
                 >
                   <Image
-                    src={product?.image ? `/${product?.image}` : "/product_placeholder.jpg"}
+                    src={
+                      product?.image
+                        ? `/${product?.image}`
+                        : "/product_placeholder.jpg"
+                    }
                     alt={product?.title}
                     width={80}
                     height={80}
@@ -660,7 +668,7 @@ const CheckoutPage = () => {
               <button
                 type="button"
                 onClick={makePurchase}
-                className="w-full rounded-md border border-transparent bg-blue-500 px-20 py-2 text-lg font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last"
+                className="w-full rounded-md border border-transparent  px-20 py-2 text-lg font-medium  shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last"
               >
                 Pay Now
               </button>

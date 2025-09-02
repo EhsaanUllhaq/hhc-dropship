@@ -347,7 +347,11 @@ const AdminSingleOrder = () => {
           {orderProducts?.map((product) => (
             <div className="flex items-center gap-x-4" key={product?.id}>
               <Image
-                src={product?.product?.mainImage ? `/${product?.product?.mainImage}` : "/product_placeholder.jpg"}
+                src={
+                  product?.product?.mainImage
+                    ? `/${product?.product?.mainImage}`
+                    : "/product_placeholder.jpg"
+                }
                 alt={product?.product?.title}
                 width={50}
                 height={50}
@@ -374,14 +378,14 @@ const AdminSingleOrder = () => {
           <div className="flex gap-x-2 max-sm:flex-col mt-5">
             <button
               type="button"
-              className="uppercase bg-blue-500 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2"
+              className="uppercase  px-10 py-5 text-lg border border-black border-gray-300 font-bold  shadow-sm hover:bg-blue-600 hover: focus:outline-none focus:ring-2"
               onClick={updateOrder}
             >
               Update order
             </button>
             <button
               type="button"
-              className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2"
+              className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold  shadow-sm hover:bg-red-700 hover: focus:outline-none focus:ring-2"
               onClick={deleteOrder}
             >
               Delete order

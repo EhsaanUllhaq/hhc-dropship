@@ -54,16 +54,14 @@ const WishItem = ({
   };
 
   const deleteItemFromWishlist = async (productId: string) => {
-    
     if (userId) {
-
-      fetch(`http://localhost:3001/api/wishlist/${userId}/${productId}`, {method: "DELETE"}).then(
-        (response) => {
-          removeFromWishlist(productId);
-          toast.success("Item removed from your wishlist");
-        }
-      );
-    }else{
+      fetch(`http://localhost:3001/api/wishlist/${userId}/${productId}`, {
+        method: "DELETE",
+      }).then((response) => {
+        removeFromWishlist(productId);
+        toast.success("Item removed from your wishlist");
+      });
+    } else {
       toast.error("You need to be logged in to perform this action");
     }
   };
@@ -108,7 +106,7 @@ const WishItem = ({
         )}
       </td>
       <td>
-        <button className="btn btn-xs bg-blue-500 text-white hover:text-blue-500 border border-blue-500 hover:bg-white hover:text-blue-500 text-sm">
+        <button className="btn btn-xs   hover:text-blue-500 border border-blue-500 hover:bg-white hover:text-blue-500 text-sm">
           <FaHeartCrack />
           <span
             className="max-sm:hidden"

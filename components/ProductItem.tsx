@@ -1,5 +1,5 @@
 // *********************
-// Role of the component: Product item component 
+// Role of the component: Product item component
 // Name of the component: ProductItem.tsx
 // Developer: Aleksandar Kuzmanovic
 // Version: 1.0
@@ -41,7 +41,7 @@ const ProductItem = ({
         className={
           color === "black"
             ? `text-xl text-black font-normal mt-2 uppercase`
-            : `text-xl text-white font-normal mt-2 uppercase`
+            : `text-xl  font-normal mt-2 uppercase`
         }
       >
         {product.title}
@@ -50,7 +50,7 @@ const ProductItem = ({
         className={
           color === "black"
             ? "text-lg text-black font-semibold"
-            : "text-lg text-white font-semibold"
+            : "text-lg  font-semibold"
         }
       >
         ${product.price}
