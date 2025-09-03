@@ -32,7 +32,7 @@ const ProductItem = ({
           width="0"
           height="0"
           sizes="100vw"
-          className="w-auto h-[300px]"
+          className="max-w-auto w-[260px] h-[260px] cursor-pointer hover:transition-all duration-500 rounded-full transform hover:scale-105"
           alt={product?.title}
         />
       </Link>
@@ -53,13 +53,14 @@ const ProductItem = ({
             : "text-lg  font-semibold"
         }
       >
-        ${product.price}
+        <span className="uppercase font-semibold">pkr &nbsp;</span>
+        {product.price}
       </p>
 
       <ProductItemRating productRating={product?.rating} />
       <Link
         href={`/product/${product?.slug}`}
-        className="block flex justify-center items-center w-full uppercase bg-white px-0 py-2 text-base border border-black border-gray-300 font-bold text-blue-600 shadow-sm hover:bg-black hover:bg-gray-100 focus:outline-none focus:ring-2"
+        className="block flex justify-center items-center w-full uppercase bg-gray-50 px-0 py-2 text-xs font-bold text-blue-600 shadow-sm hover:bg-black hover:bg-gray-100 focus:outline-none focus:ring-2  hover:transition-all duration-500 rounded-lg transform hover:scale-105"
       >
         <p>View product</p>
       </Link>
