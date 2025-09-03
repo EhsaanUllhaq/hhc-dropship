@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import prisma from "@/utils/db";
 import { nanoid } from "nanoid";
 
-export const authOptions: any = {
+const authOptions: any = {
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
@@ -18,7 +18,6 @@ export const authOptions: any = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
-
         try {
           const user = await prisma.user.findFirst({
             where: {
@@ -34,11 +33,12 @@ export const authOptions: any = {
               return user;
             }
           }
+          return null;
         } catch (err: any) {
           throw new Error(err);
         }
       },
-    })
+    }),
     // GithubProvider({
     //   clientId: process.env.GITHUB_ID ?? "",
     //   clientSecret: process.env.GITHUB_SECRET ?? "",
@@ -99,5 +99,5 @@ export const authOptions: any = {
   },
 };
 
-export const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
