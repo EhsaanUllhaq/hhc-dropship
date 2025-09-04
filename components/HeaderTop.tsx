@@ -39,7 +39,7 @@ const HeaderTop = () => {
             <FaPhone className="w-10 h-10 text-blue-600 group-hover/phone1:text-blue-800 transition-colors cursor-pointer p-3 rounded-full group-hover/phone1:bg-blue-50" />
             <a
               href={`tel:${siteAdminInfo.phone}`}
-              className="ml-2 opacity-0 w-0 group-hover/phone1:w-auto absolute left-0 group-hover/phone1:left-10 z-0 group-hover/phone1:z-10 group-hover/phone1:opacity-100 transition-all duration-500 whitespace-nowrap text-gray-700 hover:text-blue-600 bg-white px-2 py-1 rounded z-10 pointer-events-auto"
+              className="ml-2 absolute left-6 text-transparent w-0 z-0 overflow-hidden whitespace-nowrap bg-white px-2 py-1 rounded text-gray-700 hover:text-blue-600 transition-all duration-500 pointer-events-none group-hover/phone1:left-10 group-hover/phone1:w-[140px] group-hover/phone1:z-10 group-hover/phone1:pointer-events-auto group-hover/phone1:text-black"
             >
               {siteAdminInfo.phone}
             </a>
@@ -52,7 +52,7 @@ const HeaderTop = () => {
             <FaPhone className="w-10 h-10 text-green-600 group-hover/phone2:text-green-800 transition-colors cursor-pointer p-3 rounded-full group-hover/phone2:bg-green-50" />
             <a
               href={`tel:${siteAdminInfo.phone2}`}
-              className="ml-2 opacity-0 w-0 group-hover/phone2:w-auto absolute left-0 group-hover/phone2:left-10 z-0 group-hover/phone2:z-10 group-hover/phone2:opacity-100 transition-all duration-500 whitespace-nowrap text-gray-700 hover:text-blue-600 bg-white px-2 py-1 rounded z-10 pointer-events-auto"
+              className="ml-2 absolute left-6 text-transparent w-0 z-0 overflow-hidden whitespace-nowrap bg-white px-2 py-1 rounded text-gray-700 hover:text-blue-600 transition-all duration-500 pointer-events-none group-hover/phone2:left-10 group-hover/phone2:w-[140px] group-hover/phone2:z-10 group-hover/phone2:pointer-events-auto group-hover/phone2:text-black"
             >
               {siteAdminInfo.phone2}
             </a>
@@ -64,7 +64,7 @@ const HeaderTop = () => {
             <FaRegEnvelope className="w-10 h-10 text-purple-600 group-hover/adminEmail:text-purple-800 transition-colors cursor-pointer text-xl p-3 rounded-full group-hover/adminEmail:bg-purple-50" />
             <a
               href={`mailto:${siteAdminInfo.email}`}
-              className="ml-2 opacity-0 w-0 group-hover/adminEmail:w-auto absolute left-0 group-hover/adminEmail:left-10 z-0 group-hover/adminEmail:z-10 group-hover/adminEmail:opacity-100 transition-all duration-500 whitespace-nowrap text-gray-700 hover:text-blue-600 bg-white px-2 py-1 rounded z-10 pointer-events-auto"
+              className="ml-2 absolute left-6 text-transparent w-0 z-0 overflow-hidden whitespace-nowrap bg-white px-2 py-1 rounded text-gray-700 hover:text-blue-600 transition-all duration-500 pointer-events-none group-hover/adminEmail:left-10 group-hover/adminEmail:w-[220px] group-hover/adminEmail:z-10 group-hover/adminEmail:pointer-events-auto group-hover/adminEmail:text-black"
             >
               {siteAdminInfo.email}
             </a>
