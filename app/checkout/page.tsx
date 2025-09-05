@@ -6,9 +6,6 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
-  isValidCardNumber,
-  isValidCreditCardCVVOrCVC,
-  isValidCreditCardExpirationDate,
   isValidEmailAddressFormat,
   isValidNameOrLastname,
 } from "@/lib/utils";
@@ -17,19 +14,22 @@ const CheckoutPage = () => {
   const [checkoutForm, setCheckoutForm] = useState({
     name: "",
     lastname: "",
-    phone: "",
+    phone1: "",
+    phone2: "",
     email: "",
-    cardName: "",
-    cardNumber: "",
-    expirationDate: "",
-    cvc: "",
     company: "",
-    adress: "",
-    apartment: "",
-    city: "",
-    country: "",
-    postalCode: "",
+    adress1: "",
+    apartment1: "",
+    city1: "",
+    country1: "",
+    postalCode1: "",
+    adress2: "",
+    apartment2: "",
+    city2: "",
+    country2: "",
+    postalCode2: "",
     orderNotice: "",
+    sameAddress: false,
   });
   const { products, total, clearCart } = useProductStore();
   const router = useRouter();
@@ -38,17 +38,18 @@ const CheckoutPage = () => {
     if (
       checkoutForm.name.length > 0 &&
       checkoutForm.lastname.length > 0 &&
-      checkoutForm.phone.length > 0 &&
+      checkoutForm.phone1.length > 0 &&
+      checkoutForm.phone2.length > 0 &&
       checkoutForm.email.length > 0 &&
-      checkoutForm.cardName.length > 0 &&
-      checkoutForm.expirationDate.length > 0 &&
-      checkoutForm.cvc.length > 0 &&
-      checkoutForm.company.length > 0 &&
-      checkoutForm.adress.length > 0 &&
-      checkoutForm.apartment.length > 0 &&
-      checkoutForm.city.length > 0 &&
-      checkoutForm.country.length > 0 &&
-      checkoutForm.postalCode.length > 0
+      checkoutForm.adress1.length > 0 &&
+      checkoutForm.city1.length > 0 &&
+      checkoutForm.country1.length > 0 &&
+      checkoutForm.postalCode1.length > 0 &&
+      (checkoutForm.sameAddress ||
+        (checkoutForm.adress2.length > 0 &&
+          checkoutForm.city2.length > 0 &&
+          checkoutForm.country2.length > 0 &&
+          checkoutForm.postalCode2.length > 0))
     ) {
       if (!isValidNameOrLastname(checkoutForm.name)) {
         toast.error("You entered invalid format for name");
@@ -65,27 +66,7 @@ const CheckoutPage = () => {
         return;
       }
 
-      if (!isValidNameOrLastname(checkoutForm.cardName)) {
-        toast.error("You entered invalid format for card name");
-        return;
-      }
-
-      if (!isValidCardNumber(checkoutForm.cardNumber)) {
-        toast.error("You entered invalid format for credit card number");
-        return;
-      }
-
-      if (!isValidCreditCardExpirationDate(checkoutForm.expirationDate)) {
-        toast.error(
-          "You entered invalid format for credit card expiration date"
-        );
-        return;
-      }
-
-      if (!isValidCreditCardCVVOrCVC(checkoutForm.cvc)) {
-        toast.error("You entered invalid format for credit card CVC or CVV");
-        return;
-      }
+      // You can add phone validation here if needed
 
       // sending API request for creating a order
       const response = fetch("http://localhost:3001/api/orders", {
@@ -96,16 +77,22 @@ const CheckoutPage = () => {
         body: JSON.stringify({
           name: checkoutForm.name,
           lastname: checkoutForm.lastname,
-          phone: checkoutForm.phone,
+          phone1: checkoutForm.phone1,
+          phone2: checkoutForm.phone2,
           email: checkoutForm.email,
           company: checkoutForm.company,
-          adress: checkoutForm.adress,
-          apartment: checkoutForm.apartment,
-          postalCode: checkoutForm.postalCode,
+          adress1: checkoutForm.adress1,
+          apartment1: checkoutForm.apartment1,
+          postalCode1: checkoutForm.postalCode1,
+          city1: checkoutForm.city1,
+          country1: checkoutForm.country1,
+          adress2: checkoutForm.sameAddress ? checkoutForm.adress1 : checkoutForm.adress2,
+          apartment2: checkoutForm.sameAddress ? checkoutForm.apartment1 : checkoutForm.apartment2,
+          postalCode2: checkoutForm.sameAddress ? checkoutForm.postalCode1 : checkoutForm.postalCode2,
+          city2: checkoutForm.sameAddress ? checkoutForm.city1 : checkoutForm.city2,
+          country2: checkoutForm.sameAddress ? checkoutForm.country1 : checkoutForm.country2,
           status: "processing",
           total: total,
-          city: checkoutForm.city,
-          country: checkoutForm.country,
           orderNotice: checkoutForm.orderNotice,
         }),
       })
@@ -114,7 +101,6 @@ const CheckoutPage = () => {
           const orderId: string = data.id;
           // for every product in the order we are calling addOrderProduct function that adds fields to the customer_order_product table
           for (let i = 0; i < products.length; i++) {
-            let productId: string = products[i].id;
             addOrderProduct(orderId, products[i].id, products[i].amount);
           }
         })
@@ -122,28 +108,31 @@ const CheckoutPage = () => {
           setCheckoutForm({
             name: "",
             lastname: "",
-            phone: "",
+            phone1: "",
+            phone2: "",
             email: "",
-            cardName: "",
-            cardNumber: "",
-            expirationDate: "",
-            cvc: "",
             company: "",
-            adress: "",
-            apartment: "",
-            city: "",
-            country: "",
-            postalCode: "",
+            adress1: "",
+            apartment1: "",
+            city1: "",
+            country1: "",
+            postalCode1: "",
+            adress2: "",
+            apartment2: "",
+            city2: "",
+            country2: "",
+            postalCode2: "",
             orderNotice: "",
+            sameAddress: true,
           });
           clearCart();
-          toast.success("Order created successfuly");
+          toast.success("Order created successfully");
           setTimeout(() => {
             router.push("/");
           }, 1000);
         });
     } else {
-      toast.error("You need to enter values in the input fields");
+      toast.error("Please fill in all required fields");
     }
   };
 
@@ -152,9 +141,8 @@ const CheckoutPage = () => {
     productId: string,
     productQuantity: number
   ) => {
-    // sending API POST request for the table customer_order_product that does many to many relatioship for order and product
-    const response = await fetch("http://localhost:3001/api/order-product", {
-      method: "POST", // or 'PUT'
+    await fetch("http://localhost:3001/api/order-product", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -173,9 +161,44 @@ const CheckoutPage = () => {
     }
   }, []);
 
+  // Handler for checkbox toggle
+  const handleSameAddressToggle = () => {
+    setCheckoutForm((prev) => ({
+      ...prev,
+      sameAddress: !prev.sameAddress,
+      // If checking sameAddress, copy first address to second
+      ...(prev.sameAddress
+        ? {}
+        : {
+          adress2: prev.adress1,
+          apartment2: prev.apartment1,
+          city2: prev.city1,
+          country2: prev.country1,
+          postalCode2: prev.postalCode1,
+        }),
+    }));
+  };
+
+  // If sameAddress is true, sync second address with first on change
+  const handleAddress1Change = (field: string, value: string) => {
+    setCheckoutForm((prev) => ({
+      ...prev,
+      [field]: value,
+      ...(prev.sameAddress
+        ? {
+          adress2: field === "adress1" ? value : prev.adress2,
+          apartment2: field === "apartment1" ? value : prev.apartment2,
+          city2: field === "city1" ? value : prev.city2,
+          country2: field === "country1" ? value : prev.country2,
+          postalCode2: field === "postalCode1" ? value : prev.postalCode2,
+        }
+        : {}),
+    }));
+  };
+
   return (
     <div className="bg-white">
-      <SectionTitle title="Checkout" path="Home | Cart | Checkout" />
+      <SectionTitle title="Place Order" path="Home | Cart | Checkout" />
       {/* Background color split screen for large screens */}
       <div
         className="hidden h-full w-1/2 bg-white lg:block"
@@ -226,9 +249,8 @@ const CheckoutPage = () => {
                     <p className="text-gray-500">x{product?.amount}</p>
                   </div>
                   <p className="flex-none text-base font-medium">
-                    ${product?.price}
+                    PKR: {product?.price}
                   </p>
-                  <p></p>
                 </li>
               ))}
             </ul>
@@ -236,23 +258,23 @@ const CheckoutPage = () => {
             <dl className="hidden space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-900 lg:block">
               <div className="flex items-center justify-between">
                 <dt className="text-gray-600">Subtotal</dt>
-                <dd>${total}</dd>
+                <dd>PKR: {total}</dd>
               </div>
 
               <div className="flex items-center justify-between">
-                <dt className="text-gray-600">Shipping</dt>
-                <dd>$5</dd>
+                <dt className="text-gray-600">Delivery Charges</dt>
+                <dd>PKR: 5</dd>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between hidden">
                 <dt className="text-gray-600">Taxes</dt>
-                <dd>${total / 5}</dd>
+                <dd>PKR: {(total / 5).toFixed(2)}</dd>
               </div>
 
               <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                 <dt className="text-base">Total</dt>
                 <dd className="text-base">
-                  ${total === 0 ? 0 : Math.round(total + total / 5 + 5)}
+                  PKR: {total === 0 ? 0 : Math.round(total + total / 5 + 5)}
                 </dd>
               </div>
             </dl>
@@ -269,78 +291,98 @@ const CheckoutPage = () => {
                 Contact information
               </h2>
 
-              <div className="mt-6">
-                <label
-                  htmlFor="name-input"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    value={checkoutForm.name}
-                    onChange={(e) =>
-                      setCheckoutForm({
-                        ...checkoutForm,
-                        name: e.target.value,
-                      })
-                    }
-                    type="text"
-                    id="name-input"
-                    name="name-input"
-                    autoComplete="text"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  />
+              <div className="mt-6 grid grid-cols-2 gap-x-4">
+                <div>
+                  <label
+                    htmlFor="name-input"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Name
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      value={checkoutForm.name}
+                      onChange={(e) =>
+                        setCheckoutForm({ ...checkoutForm, name: e.target.value })
+                      }
+                      type="text"
+                      id="name-input"
+                      name="name-input"
+                      autoComplete="text"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="lastname-input"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Lastname
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      value={checkoutForm.lastname}
+                      onChange={(e) =>
+                        setCheckoutForm({
+                          ...checkoutForm,
+                          lastname: e.target.value,
+                        })
+                      }
+                      type="text"
+                      id="lastname-input"
+                      name="lastname-input"
+                      autoComplete="text"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <label
-                  htmlFor="lastname-input"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Lastname
-                </label>
-                <div className="mt-1">
-                  <input
-                    value={checkoutForm.lastname}
-                    onChange={(e) =>
-                      setCheckoutForm({
-                        ...checkoutForm,
-                        lastname: e.target.value,
-                      })
-                    }
-                    type="text"
-                    id="lastname-input"
-                    name="lastname-input"
-                    autoComplete="text"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  />
+              <div className="mt-6 grid grid-cols-2 gap-x-4">
+                <div>
+                  <label
+                    htmlFor="phone1-input"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Primary Phone number
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      value={checkoutForm.phone1}
+                      onChange={(e) =>
+                        setCheckoutForm({ ...checkoutForm, phone1: e.target.value })
+                      }
+                      type="tel"
+                      id="phone1-input"
+                      name="phone1-input"
+                      autoComplete="tel"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-6">
-                <label
-                  htmlFor="phone-input"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Phone number
-                </label>
-                <div className="mt-1">
-                  <input
-                    value={checkoutForm.phone}
-                    onChange={(e) =>
-                      setCheckoutForm({
-                        ...checkoutForm,
-                        phone: e.target.value,
-                      })
-                    }
-                    type="tel"
-                    id="phone-input"
-                    name="phone-input"
-                    autoComplete="text"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  />
+                <div>
+                  <label
+                    htmlFor="phone2-input"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Secondary Phone number
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      value={checkoutForm.phone2}
+                      onChange={(e) =>
+                        setCheckoutForm({ ...checkoutForm, phone2: e.target.value })
+                      }
+                      type="tel"
+                      id="phone2-input"
+                      name="phone2-input"
+                      autoComplete="tel"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -355,10 +397,7 @@ const CheckoutPage = () => {
                   <input
                     value={checkoutForm.email}
                     onChange={(e) =>
-                      setCheckoutForm({
-                        ...checkoutForm,
-                        email: e.target.value,
-                      })
+                      setCheckoutForm({ ...checkoutForm, email: e.target.value })
                     }
                     type="email"
                     id="email-address"
@@ -370,127 +409,17 @@ const CheckoutPage = () => {
               </div>
             </section>
 
-            <section aria-labelledby="payment-heading" className="mt-10">
-              <h2
-                id="payment-heading"
-                className="text-lg font-medium text-gray-900"
-              >
-                Payment details
-              </h2>
-
-              <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4">
-                <div className="col-span-3 sm:col-span-4">
-                  <label
-                    htmlFor="name-on-card"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Name on card
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      id="name-on-card"
-                      name="name-on-card"
-                      autoComplete="cc-name"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.cardName}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          cardName: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="col-span-3 sm:col-span-4">
-                  <label
-                    htmlFor="card-number"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Card number
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      id="card-number"
-                      name="card-number"
-                      autoComplete="cc-number"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.cardNumber}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          cardNumber: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="col-span-2 sm:col-span-3">
-                  <label
-                    htmlFor="expiration-date"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Expiration date (MM/YY)
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="expiration-date"
-                      id="expiration-date"
-                      autoComplete="cc-exp"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.expirationDate}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          expirationDate: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="cvc"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    CVC or CVV
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="cvc"
-                      id="cvc"
-                      autoComplete="csc"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.cvc}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          cvc: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section aria-labelledby="shipping-heading" className="mt-10">
+            <section aria-labelledby="shipping-heading" className="mt-2">
+              <div className="w-full h-1 border-2 mt-4" />
               <h2
                 id="shipping-heading"
-                className="text-lg font-medium text-gray-900"
+                className="text-lg font-medium text-gray-900 mt-4"
               >
-                Shipping address
+                Shipping address 1
               </h2>
 
               <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-3 hidden">
                   <label
                     htmlFor="company"
                     className="block text-sm font-medium text-gray-700"
@@ -514,9 +443,9 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-2">
                   <label
-                    htmlFor="address"
+                    htmlFor="adress1"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Address
@@ -524,40 +453,13 @@ const CheckoutPage = () => {
                   <div className="mt-1">
                     <input
                       type="text"
-                      id="address"
-                      name="address"
+                      id="adress1"
+                      name="adress1"
                       autoComplete="street-address"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.adress}
+                      value={checkoutForm.adress1}
                       onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          adress: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="apartment"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Apartment, suite, etc.
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      id="apartment"
-                      name="apartment"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.apartment}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          apartment: e.target.value,
-                        })
+                        handleAddress1Change("adress1", e.target.value)
                       }
                     />
                   </div>
@@ -565,7 +467,51 @@ const CheckoutPage = () => {
 
                 <div>
                   <label
-                    htmlFor="city"
+                    htmlFor="postalCode1"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    ZIP / Postal code
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      id="postalCode1"
+                      name="postalCode1"
+                      autoComplete="postal-code"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      value={checkoutForm.postalCode1}
+                      onChange={(e) =>
+                        handleAddress1Change("postalCode1", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="apartment1"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Apartment, House No#, etc.
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      id="apartment1"
+                      name="apartment1"
+                      autoComplete="address-line2"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      value={checkoutForm.apartment1}
+                      onChange={(e) =>
+                        handleAddress1Change("apartment1", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="city1"
                     className="block text-sm font-medium text-gray-700"
                   >
                     City
@@ -573,16 +519,13 @@ const CheckoutPage = () => {
                   <div className="mt-1">
                     <input
                       type="text"
-                      id="city"
-                      name="city"
+                      id="city1"
+                      name="city1"
                       autoComplete="address-level2"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.city}
+                      value={checkoutForm.city1}
                       onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          city: e.target.value,
-                        })
+                        handleAddress1Change("city1", e.target.value)
                       }
                     />
                   </div>
@@ -590,89 +533,216 @@ const CheckoutPage = () => {
 
                 <div>
                   <label
-                    htmlFor="region"
+                    htmlFor="country1"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Country
+                    Province
                   </label>
                   <div className="mt-1">
                     <input
                       type="text"
-                      id="region"
-                      name="region"
-                      autoComplete="address-level1"
+                      id="country1"
+                      name="country1"
+                      autoComplete="country-name"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.country}
+                      value={checkoutForm.country1}
                       onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          country: e.target.value,
-                        })
+                        handleAddress1Change("country1", e.target.value)
                       }
                     />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="postal-code"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Postal code
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      id="postal-code"
-                      name="postal-code"
-                      autoComplete="postal-code"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                      value={checkoutForm.postalCode}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          postalCode: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="order-notice"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Order notice
-                  </label>
-                  <div className="mt-1">
-                    <textarea
-                      className="textarea textarea-bordered textarea-lg w-full"
-                      id="order-notice"
-                      name="order-notice"
-                      autoComplete="order-notice"
-                      value={checkoutForm.orderNotice}
-                      onChange={(e) =>
-                        setCheckoutForm({
-                          ...checkoutForm,
-                          orderNotice: e.target.value,
-                        })
-                      }
-                    ></textarea>
                   </div>
                 </div>
               </div>
             </section>
 
-            <div className="mt-10 border-t border-gray-200 pt-6 ml-0">
-              <button
-                type="button"
-                onClick={makePurchase}
-                className="w-full rounded-md border border-transparent  px-20 py-2 text-lg font-medium  shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last"
+            <section aria-labelledby="shipping-heading2" className="mt-10">
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="sameAddress"
+                  checked={checkoutForm.sameAddress}
+                  onChange={handleSameAddressToggle}
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label
+                  htmlFor="sameAddress"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  Shipping address 2 same as 1
+                </label>
+              </div>
+              {!checkoutForm.sameAddress && (
+                <>
+                  <div className="w-full h-1 border-2 mt-4" />
+                  <h2
+                    id="shipping-heading2"
+                    className="mt-4 text-lg font-medium text-gray-900"
+                  >
+                    Shipping address 2
+                  </h2>
+
+                  <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
+                    <div className="sm:col-span-2">
+                      <label
+                        htmlFor="adress2"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Address
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="text"
+                          id="adress2"
+                          name="adress2"
+                          autoComplete="street-address"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          value={checkoutForm.adress2}
+                          onChange={(e) =>
+                            setCheckoutForm({
+                              ...checkoutForm,
+                              adress2: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="postalCode2"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        ZIP / Postal code
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="text"
+                          id="postalCode2"
+                          name="postalCode2"
+                          autoComplete="postal-code"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          value={checkoutForm.postalCode2}
+                          onChange={(e) =>
+                            setCheckoutForm({
+                              ...checkoutForm,
+                              postalCode2: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="apartment2"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Apartment, House No#, etc.
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="text"
+                          id="apartment2"
+                          name="apartment2"
+                          autoComplete="address-line2"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          value={checkoutForm.apartment2}
+                          onChange={(e) =>
+                            setCheckoutForm({
+                              ...checkoutForm,
+                              apartment2: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="city2"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        City
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="text"
+                          id="city2"
+                          name="city2"
+                          autoComplete="address-level2"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          value={checkoutForm.city2}
+                          onChange={(e) =>
+                            setCheckoutForm({
+                              ...checkoutForm,
+                              city2: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="country2"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Province
+                      </label>
+                      <div className="mt-1">
+                        <input
+                          type="text"
+                          id="country2"
+                          name="country2"
+                          autoComplete="country-name"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          value={checkoutForm.country2}
+                          onChange={(e) =>
+                            setCheckoutForm({
+                              ...checkoutForm,
+                              country2: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </section>
+
+            <section aria-labelledby="order-notice" className="mt-2">
+              <div className="w-full h-1 border-2 mt-4" />
+              <label
+                htmlFor="orderNotice"
+                className="block text-sm font-medium text-gray-700 mt-4"
               >
-                Pay Now
-              </button>
-            </div>
+                Order Notice (Optional)
+              </label>
+              <div className="mt-1">
+                <textarea
+                  id="orderNotice"
+                  name="orderNotice"
+                  rows={3}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  value={checkoutForm.orderNotice}
+                  onChange={(e) =>
+                    setCheckoutForm({ ...checkoutForm, orderNotice: e.target.value })
+                  }
+                />
+              </div>
+            </section>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                makePurchase();
+              }}
+              type="submit"
+              className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Place Order (Cash on Delivery)
+            </button>
           </div>
         </form>
       </main>

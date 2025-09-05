@@ -135,208 +135,195 @@ const DashboardProductDetails = ({
   }, [id]);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
-      <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5">
-        <h1 className="text-3xl font-semibold">Product details</h1>
-        {/* Product name input div - start */}
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product name:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.title}
-              onChange={(e) =>
-                setProduct({ ...product!, title: e.target.value })
-              }
-            />
-          </label>
-        </div>
-        {/* Product name input div - end */}
-        {/* Product price input div - start */}
+    <div className="bg-gray-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto flex flex-col xl:flex-row gap-10">
+        <DashboardSidebar />
 
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product price:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.price}
-              onChange={(e) =>
-                setProduct({ ...product!, price: Number(e.target.value) })
-              }
-            />
-          </label>
-        </div>
-        {/* Product price input div - end */}
-        {/* Product manufacturer input div - start */}
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Manufacturer:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.manufacturer}
-              onChange={(e) =>
-                setProduct({ ...product!, manufacturer: e.target.value })
-              }
-            />
-          </label>
-        </div>
-        {/* Product manufacturer input div - end */}
-        {/* Product slug input div - start */}
+        <div className="bg-white shadow-md rounded-lg p-8 w-full">
+          <h1 className="text-3xl font-bold mb-10 text-gray-900">Edit Product</h1>
 
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Slug:</span>
+          {/* Row 1: Name + Manufacturer */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="relative">
+              <input
+                type="text"
+                id="product-name"
+                value={product?.title}
+                onChange={(e) => setProduct({ ...product!, title: e.target.value })}
+                placeholder=" "
+                className="peer w-full border border-gray-300 rounded-md px-4 pt-3 pb-2.5 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <label htmlFor="product-name" className="absolute text-gray-500 text-sm left-1.5 -top-2 bg-white px-4 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+                Product name
+              </label>
             </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.slug && convertSlugToURLFriendly(product?.slug)}
-              onChange={(e) =>
-                setProduct({
-                  ...product!,
-                  slug: convertSlugToURLFriendly(e.target.value),
-                })
-              }
-            />
-          </label>
-        </div>
-        {/* Product slug input div - end */}
-        {/* Product inStock select input div - start */}
 
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Is product in stock?</span>
+            <div className="relative">
+              <input
+                type="text"
+                id="manufacturer"
+                value={product?.manufacturer}
+                onChange={(e) =>
+                  setProduct({ ...product!, manufacturer: e.target.value })
+                }
+                placeholder=" "
+                className="peer w-full border border-gray-300 rounded-md px-4 pt-3 pb-2.5 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <label htmlFor="manufacturer" className="absolute text-gray-500 text-sm left-1.5 -top-2 bg-white px-4 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+                Manufacturer
+              </label>
             </div>
-            <select
-              className="select select-bordered"
-              value={product?.inStock}
-              onChange={(e) => {
-                setProduct({ ...product!, inStock: Number(e.target.value) });
-              }}
-            >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
-            </select>
-          </label>
-        </div>
-        {/* Product inStock select input div - end */}
-        {/* Product category select input div - start */}
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Category:</span>
+          </div>
+
+          {/* Row 2: Price + Category + In Stock */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div className="relative">
+              <input
+                type="text"
+                id="product-price"
+                value={product?.price}
+                onChange={(e) =>
+                  setProduct({ ...product!, price: Number(e.target.value) })
+                }
+                placeholder=" "
+                className="peer w-full border border-gray-300 rounded-md px-4 pt-3 pb-2.5 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <label htmlFor="product-price" className="absolute text-gray-500 text-sm left-1.5 -top-2 bg-white px-4 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+                Price
+              </label>
             </div>
-            <select
-              className="select select-bordered"
-              value={product?.categoryId}
-              onChange={(e) =>
-                setProduct({
-                  ...product!,
-                  categoryId: e.target.value,
-                })
-              }
-            >
-              {categories &&
-                categories.map((category: Category) => (
-                  <option key={category?.id} value={category?.id}>
-                    {formatCategoryName(category?.name)}
+
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1 absolute left-1.5 -top-2 px-4 bg-white">Category</label>
+              <select
+                className="w-full border border-gray-300 rounded-md px-4 py-2 pt-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={product?.categoryId}
+                onChange={(e) =>
+                  setProduct({ ...product!, categoryId: e.target.value })
+                }
+              >
+                {categories?.map((category: Category) => (
+                  <option key={category.id} value={category.id}>
+                    {formatCategoryName(category.name)}
                   </option>
                 ))}
-            </select>
-          </label>
-        </div>
-        {/* Product category select input div - end */}
-
-        {/* Main image file upload div - start */}
-        <div>
-          <input
-            type="file"
-            className="file-input file-input-bordered file-input-lg w-full max-w-sm"
-            onChange={(e) => {
-              const selectedFile = e?.target.files?.[0];
-
-              if (selectedFile) {
-                uploadFile(selectedFile);
-                setProduct({ ...product!, mainImage: selectedFile.name });
-              }
-            }}
-          />
-          {product?.mainImage && (
-            <Image
-              src={`/` + product?.mainImage}
-              alt={product?.title}
-              className="w-auto h-auto mt-2"
-              width={100}
-              height={100}
-            />
-          )}
-        </div>
-        {/* Main image file upload div - end */}
-        {/* Other images file upload div - start */}
-        <div className="flex gap-x-1">
-          {otherImages &&
-            otherImages.map((image) => (
-              <Image
-                src={`/${image.image}`}
-                key={nanoid()}
-                alt="product image"
-                width={100}
-                height={100}
-                className="w-auto h-auto"
-              />
-            ))}
-        </div>
-        {/* Other images file upload div - end */}
-        {/* Product description div - start */}
-        <div>
-          <label className="form-control">
-            <div className="label">
-              <span className="label-text">Product description:</span>
+              </select>
             </div>
+
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1 absolute left-1.5 -top-2 px-4 bg-white">In Stock</label>
+              <select
+                className="w-full border border-gray-300 rounded-md px-4 py-2 pt-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={product?.inStock}
+                onChange={(e) =>
+                  setProduct({ ...product!, inStock: Number(e.target.value) })
+                }
+              >
+                <option value={1}>Yes</option>
+                <option value={0}>No</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Row 3: Slug + File */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="relative">
+              <input
+                type="text"
+                id="slug"
+                value={product?.slug && convertSlugToURLFriendly(product?.slug)}
+                onChange={(e) =>
+                  setProduct({
+                    ...product!,
+                    slug: convertSlugToURLFriendly(e.target.value),
+                  })
+                }
+                placeholder=" "
+                className="peer w-full border border-gray-300 rounded-md px-4 pb-2.5 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <label htmlFor="slug" className="absolute text-gray-500 text-sm left-1.5 -top-2 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-600">
+                Slug
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1 hidden">Main Image</label>
+              <input
+                type="file"
+                className="file-input file-input-bordered w-full"
+                onChange={(e) => {
+                  const selectedFile = e?.target.files?.[0];
+                  if (selectedFile) {
+                    uploadFile(selectedFile);
+                    setProduct({ ...product!, mainImage: selectedFile.name });
+                  }
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="mt-8">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Product Description</label>
             <textarea
-              className="textarea textarea-bordered h-24"
+              className="w-full border border-gray-300 rounded-md px-4 py-3 text-gray-900 h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={product?.description}
               onChange={(e) =>
                 setProduct({ ...product!, description: e.target.value })
               }
-            ></textarea>
-          </label>
+            />
+          </div>
+
+          {/* Main Image Preview */}
+          {product?.mainImage && (
+            <div className="mt-6">
+              <Image
+                src={`/${product.mainImage}`}
+                alt="Main image"
+                width={120}
+                height={120}
+                className="rounded border border-gray-200"
+              />
+            </div>
+          )}
+
+          {/* Other Images */}
+          {otherImages?.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-4">
+              {otherImages.map((image) => (
+                <Image
+                  key={nanoid()}
+                  src={`/${image.image}`}
+                  alt="product"
+                  width={120}
+                  height={120}
+                  className="rounded-md border border-gray-300"
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="mt-10 flex flex-wrap gap-4">
+            <button
+              onClick={updateProduct}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-base font-semibold shadow-sm transition"
+            >
+              Update Product
+            </button>
+            <button
+              onClick={deleteProduct}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md text-base font-semibold shadow-sm transition"
+            >
+              Delete Product
+            </button>
+          </div>
+
+          {/* Warning */}
+          <p className="mt-6 text-red-600 font-medium text-sm max-w-xl">
+            ⚠️ To delete the product, you must first remove all related records from the <code>customer_order_product</code> table.
+          </p>
         </div>
-        {/* Product description div - end */}
-        {/* Action buttons div - start */}
-        <div className="flex gap-x-2 max-sm:flex-col">
-          <button
-            type="button"
-            onClick={updateProduct}
-            className="uppercase  px-10 py-5 text-lg border border-black border-gray-300 font-bold  shadow-sm hover:bg-blue-600 hover: focus:outline-none focus:ring-2"
-          >
-            Update product
-          </button>
-          <button
-            type="button"
-            className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold  shadow-sm hover:bg-red-700 hover: focus:outline-none focus:ring-2"
-            onClick={deleteProduct}
-          >
-            Delete product
-          </button>
-        </div>
-        {/* Action buttons div - end */}
-        <p className="text-xl max-sm:text-lg text-error">
-          To delete the product you first need to delete all its records in
-          orders (customer_order_product table).
-        </p>
       </div>
     </div>
   );
