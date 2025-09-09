@@ -3,61 +3,61 @@ export const categoryMenuList = [
     id: 1,
     title: "Smart Phones",
     src: "/smart phone icon.png",
-    href: "/shop/smart-phones"
+    href: "/shop/smart-phones",
   },
   {
     id: 2,
     title: "Tablets",
     src: "/tablet icon.png",
-    href: "/shop/tablets"
+    href: "/shop/tablets",
   },
   {
     id: 3,
     title: "Mouses",
     src: "/mouse icon.png",
-    href: "/shop/mouses"
+    href: "/shop/mouses",
   },
   {
     id: 4,
     title: "Cameras",
     src: "/camera icon.png",
-    href: "/shop/cameras"
+    href: "/shop/cameras",
   },
   {
     id: 5,
     title: "Smart Watches",
     src: "/smart watch.png",
-    href: "/shop/watches"
+    href: "/shop/watches",
   },
   {
     id: 6,
     title: "Laptops",
     src: "/laptop icon.png",
-    href: "/shop/laptops"
+    href: "/shop/laptops",
   },
   {
     id: 7,
     title: "PCs",
     src: "/pc icon.png",
-    href: "/shop/computers"
+    href: "/shop/computers",
   },
   {
     id: 8,
     title: "Printers",
     src: "/printers icon.png",
-    href: "/shop/printers"
+    href: "/shop/printers",
   },
   {
     id: 9,
     title: "Earbuds",
     src: "/ear buds icon.png",
-    href: "/shop/earbuds"
+    href: "/shop/earbuds",
   },
   {
     id: 10,
     title: "Head Phones",
     src: "/headphone icon.png",
-    href: "/shop/headphones"
+    href: "/shop/headphones",
   },
 ];
 
@@ -89,12 +89,12 @@ export const navigation = {
     { name: "Register Discounts", href: "#" },
   ],
   about: [
-    { name: "About Singitronic", href: "#" },
+    { name: "About CURB", href: "#" },
     { name: "Work With Us", href: "#" },
     { name: "Company Profile", href: "#" },
   ],
   buy: [
-    { name: "Singitronic Loyalty Card", href: "#" },
+    { name: "CURB Loyalty Card", href: "#" },
     { name: "Terms Of Use", href: "#" },
     { name: "Privacy Policy", href: "#" },
     { name: "Complaints", href: "#" },
@@ -102,7 +102,7 @@ export const navigation = {
   ],
   help: [
     { name: "Contact", href: "#" },
-    { name: "How to Buy at Singitronic", href: "#" },
+    { name: "How to Buy at CURB", href: "#" },
     { name: "FAQ", href: "#" },
   ],
 };
@@ -125,7 +125,7 @@ export const isValidCardNumber = (input: string) => {
   // test for credit card number between 13 and 19 characters
   const regex = /^\d{13,19}$/;
   return regex.test(cleanedInput);
-}
+};
 
 export const isValidCreditCardExpirationDate = (input: string) => {
   // simple expiration date format check

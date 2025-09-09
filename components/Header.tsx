@@ -44,19 +44,27 @@ const Header = () => {
       title: string;
       price: number;
       image: string;
-      slug:string
+      slug: string;
       stockAvailabillity: number;
     }[] = [];
-    
-    wishlist.map((item: any) => productArray.push({id: item?.product?.id, title: item?.product?.title, price: item?.product?.price, image: item?.product?.mainImage, slug: item?.product?.slug, stockAvailabillity: item?.product?.inStock}));
-    
+
+    wishlist.map((item: any) =>
+      productArray.push({
+        id: item?.product?.id,
+        title: item?.product?.title,
+        price: item?.product?.price,
+        image: item?.product?.mainImage,
+        slug: item?.product?.slug,
+        stockAvailabillity: item?.product?.inStock,
+      })
+    );
+
     setWishlist(productArray);
   };
 
   // getting user by email so I can get his user id
   const getUserByEmail = async () => {
     if (session?.user?.email) {
-      
       fetch(`http://localhost:3001/api/users/email/${session?.user?.email}`, {
         cache: "no-store",
       })
@@ -77,7 +85,13 @@ const Header = () => {
       {pathname.startsWith("/admin") === false && (
         <div className="h-32 bg-white flex items-center justify-between px-16 max-[1320px]:px-16 max-md:px-6 max-lg:flex-col max-lg:gap-y-7 max-lg:justify-center max-lg:h-60 max-w-screen-2xl mx-auto">
           <Link href="/">
-            <img src="/logo v1 svg.svg" width={300} height={300} alt="singitronic logo" className="relative right-5 max-[1023px]:w-56" />
+            <img
+              src="/site/logo-vertical.jpg"
+              width={280}
+              height={70}
+              alt="singitronic logo"
+              className="relative ml-4 mb-5 max-w-[280px] max-h-[70px]"
+            />
           </Link>
           <SearchInput />
           <div className="flex gap-x-10">
@@ -90,11 +104,11 @@ const Header = () => {
         <div className="flex justify-between h-32 bg-white items-center px-16 max-[1320px]:px-10  max-w-screen-2xl mx-auto max-[400px]:px-5">
           <Link href="/">
             <Image
-              src="/logo v1.png"
-              width={130}
-              height={130}
+              src="/site/logo-vertical.jpg"
+              width={280}
+              height={70}
               alt="singitronic logo"
-              className="w-56 h-auto"
+              className="w-56 h-auto max-w-[280px] max-h-[70px]"
             />
           </Link>
           <div className="flex gap-x-5 items-center">
