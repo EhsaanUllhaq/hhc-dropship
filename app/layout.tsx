@@ -8,9 +8,9 @@ import { getServerSession } from "next-auth";
 import "svgmap/dist/svgMap.min.css";
 
 // const inter = Inter({ subsets: ["latin"] });
-// const sono = Sono({ subsets: ["latin"], weight: ["400", "700"] });
+const sono = Sono({ subsets: ["latin"], weight: ["400", "700"] });
 // const roboto = Roboto({ subsets: ["latin"], weight: ["400", "700"] });
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
+// const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,7 +25,7 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en" data-theme="light">
-      <body className={poppins.className}>
+      <body className={sono.className}>
         <SessionProvider session={session}>
           <Header />
           <Providers>{children}</Providers>

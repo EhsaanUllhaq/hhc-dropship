@@ -20,21 +20,28 @@ interface ImageItem {
 }
 
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const serverEndpoint =
+    process.env.NEXT_PUBLIC_SERVER_ENDPOINT || "http://localhost:3001";
   // sending API request for a single product with a given product slug
-  const data = await fetch(
-    `http://localhost:3001/api/slugs/${params.productSlug}`
-  );
+  const data = await fetch(`${serverEndpoint}/api/slugs/${params.productSlug}`);
   const product = await data.json();
 
   // sending API request for more than 1 product image if it exists
-  const imagesData = await fetch(
-    `http://localhost:3001/api/images/${product.id}`
-  );
+  const imagesData = await fetch(`${serverEndpoint}/api/images/${product.id}`);
   const images = await imagesData.json();
 
   if (!product || product.error) {
     notFound();
   }
+
+  const shareText = encodeURIComponent(`${product?.title} - ${product?.price}`);
+  const productUrl = encodeURIComponent(
+    `${baseUrl}/product/${params.productSlug}`
+  );
+  const productImageUrl = encodeURIComponent(
+    `${baseUrl}/${product?.mainImage}`
+  );
 
   return (
     <div className="bg-white">
@@ -42,7 +49,11 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
         <div className="flex justify-center gap-x-16 pt-10 max-lg:flex-col items-center gap-y-5 px-5">
           <div>
             <Image
-              src={product?.mainImage ? `/${product?.mainImage}` : "/product_placeholder.jpg"}
+              src={
+                product?.mainImage
+                  ? `/${product?.mainImage}`
+                  : "/product_placeholder.jpg"
+              }
               width={500}
               height={500}
               alt="main image"
@@ -62,9 +73,9 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
             </div>
           </div>
           <div className="flex flex-col gap-y-7 text-black max-[500px]:text-center">
-            <SingleProductRating rating={product?.rating} />
             <h1 className="text-3xl">{product?.title}</h1>
-            <p className="text-xl font-semibold">${product?.price}</p>
+            <p className="text-xl font-semibold">PKR: {product?.price}</p>
+            <SingleProductRating rating={product?.rating} />
             <StockAvailabillity stock={94} inStock={product?.inStock} />
             <SingleProductDynamicFields product={product} />
             <div className="flex flex-col gap-y-2 max-[500px]:items-center">
@@ -75,12 +86,30 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
               <div className="text-lg flex gap-x-2">
                 <span>Share:</span>
                 <div className="flex items-center gap-x-1 text-2xl">
-                  <FaSquareFacebook />
-                  <FaSquareXTwitter />
-                  <FaSquarePinterest />
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${productUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaSquareFacebook />
+                  </a>
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${productUrl}&text=${shareText}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaSquareXTwitter />
+                  </a>
+                  <a
+                    href={`https://www.pinterest.com/pin/create/button/?url=${productUrl}&media=${productImageUrl}&description=${shareText}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaSquarePinterest />
+                  </a>
                 </div>
               </div>
-              <div className="flex gap-x-2">
+              <div className="flex gap-x-2 hidden">
                 <Image
                   src="/visa.svg"
                   width={50}

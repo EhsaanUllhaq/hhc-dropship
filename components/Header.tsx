@@ -87,10 +87,10 @@ const Header = () => {
           <Link href="/">
             <img
               src="/site/logo-vertical.jpg"
-              width={280}
+              width={240}
               height={70}
               alt="singitronic logo"
-              className="relative ml-4 mb-5 max-w-[280px] max-h-[70px]"
+              className="relative ml-4 mb-5 max-w-[240px] max-h-[70px]"
             />
           </Link>
           <SearchInput />
@@ -105,10 +105,10 @@ const Header = () => {
           <Link href="/">
             <Image
               src="/site/logo-vertical.jpg"
-              width={280}
+              width={240}
               height={70}
               alt="singitronic logo"
-              className="w-56 h-auto max-w-[280px] max-h-[70px]"
+              className="w-56 h-auto max-w-[240px] max-h-[70px]"
             />
           </Link>
           <div className="flex gap-x-5 items-center">

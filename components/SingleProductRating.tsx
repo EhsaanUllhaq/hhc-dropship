@@ -1,5 +1,5 @@
 // *********************
-// Role of the component: Rating stars component that will display stars on the single product page 
+// Role of the component: Rating stars component that will display stars on the single product page
 // Name of the component: SingleProductRating.tsx
 // Developer: Aleksandar Kuzmanovic
 // Version: 1.0
@@ -38,7 +38,7 @@ const SingleProductRating = ({ rating }: { rating: number }) => {
             </>
           );
         })}
-      <span className="text-xl ml-1">(3 reviews)</span>
+      <span className="text-xl ml-1 hidden">(3 reviews)</span>
     </div>
   );
 };

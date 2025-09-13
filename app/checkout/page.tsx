@@ -5,10 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import {
-  isValidEmailAddressFormat,
-  isValidNameOrLastname,
-} from "@/lib/utils";
+import { isValidEmailAddressFormat, isValidNameOrLastname } from "@/lib/utils";
 
 const CheckoutPage = () => {
   const [checkoutForm, setCheckoutForm] = useState({
@@ -86,22 +83,33 @@ const CheckoutPage = () => {
           postalCode1: checkoutForm.postalCode1,
           city1: checkoutForm.city1,
           country1: checkoutForm.country1,
-          adress2: checkoutForm.sameAddress ? checkoutForm.adress1 : checkoutForm.adress2,
-          apartment2: checkoutForm.sameAddress ? checkoutForm.apartment1 : checkoutForm.apartment2,
-          postalCode2: checkoutForm.sameAddress ? checkoutForm.postalCode1 : checkoutForm.postalCode2,
-          city2: checkoutForm.sameAddress ? checkoutForm.city1 : checkoutForm.city2,
-          country2: checkoutForm.sameAddress ? checkoutForm.country1 : checkoutForm.country2,
+          adress2: checkoutForm.sameAddress
+            ? checkoutForm.adress1
+            : checkoutForm.adress2,
+          apartment2: checkoutForm.sameAddress
+            ? checkoutForm.apartment1
+            : checkoutForm.apartment2,
+          postalCode2: checkoutForm.sameAddress
+            ? checkoutForm.postalCode1
+            : checkoutForm.postalCode2,
+          city2: checkoutForm.sameAddress
+            ? checkoutForm.city1
+            : checkoutForm.city2,
+          country2: checkoutForm.sameAddress
+            ? checkoutForm.country1
+            : checkoutForm.country2,
           status: "processing",
           total: total,
           orderNotice: checkoutForm.orderNotice,
         }),
       })
         .then((res) => res.json())
-        .then((data) => {
+        .then(async (data) => {
           const orderId: string = data.id;
           // for every product in the order we are calling addOrderProduct function that adds fields to the customer_order_product table
           for (let i = 0; i < products.length; i++) {
-            addOrderProduct(orderId, products[i].id, products[i].amount);
+            console.log("Adding product to order:", products[i]);
+            await addOrderProduct(orderId, products[i].id, products[i].amount);
           }
         })
         .then(() => {
@@ -170,12 +178,12 @@ const CheckoutPage = () => {
       ...(prev.sameAddress
         ? {}
         : {
-          adress2: prev.adress1,
-          apartment2: prev.apartment1,
-          city2: prev.city1,
-          country2: prev.country1,
-          postalCode2: prev.postalCode1,
-        }),
+            adress2: prev.adress1,
+            apartment2: prev.apartment1,
+            city2: prev.city1,
+            country2: prev.country1,
+            postalCode2: prev.postalCode1,
+          }),
     }));
   };
 
@@ -186,12 +194,12 @@ const CheckoutPage = () => {
       [field]: value,
       ...(prev.sameAddress
         ? {
-          adress2: field === "adress1" ? value : prev.adress2,
-          apartment2: field === "apartment1" ? value : prev.apartment2,
-          city2: field === "city1" ? value : prev.city2,
-          country2: field === "country1" ? value : prev.country2,
-          postalCode2: field === "postalCode1" ? value : prev.postalCode2,
-        }
+            adress2: field === "adress1" ? value : prev.adress2,
+            apartment2: field === "apartment1" ? value : prev.apartment2,
+            city2: field === "city1" ? value : prev.city2,
+            country2: field === "country1" ? value : prev.country2,
+            postalCode2: field === "postalCode1" ? value : prev.postalCode2,
+          }
         : {}),
     }));
   };
@@ -303,7 +311,10 @@ const CheckoutPage = () => {
                     <input
                       value={checkoutForm.name}
                       onChange={(e) =>
-                        setCheckoutForm({ ...checkoutForm, name: e.target.value })
+                        setCheckoutForm({
+                          ...checkoutForm,
+                          name: e.target.value,
+                        })
                       }
                       type="text"
                       id="name-input"
@@ -352,7 +363,10 @@ const CheckoutPage = () => {
                     <input
                       value={checkoutForm.phone1}
                       onChange={(e) =>
-                        setCheckoutForm({ ...checkoutForm, phone1: e.target.value })
+                        setCheckoutForm({
+                          ...checkoutForm,
+                          phone1: e.target.value,
+                        })
                       }
                       type="tel"
                       id="phone1-input"
@@ -374,7 +388,10 @@ const CheckoutPage = () => {
                     <input
                       value={checkoutForm.phone2}
                       onChange={(e) =>
-                        setCheckoutForm({ ...checkoutForm, phone2: e.target.value })
+                        setCheckoutForm({
+                          ...checkoutForm,
+                          phone2: e.target.value,
+                        })
                       }
                       type="tel"
                       id="phone2-input"
@@ -397,7 +414,10 @@ const CheckoutPage = () => {
                   <input
                     value={checkoutForm.email}
                     onChange={(e) =>
-                      setCheckoutForm({ ...checkoutForm, email: e.target.value })
+                      setCheckoutForm({
+                        ...checkoutForm,
+                        email: e.target.value,
+                      })
                     }
                     type="email"
                     id="email-address"
@@ -727,7 +747,10 @@ const CheckoutPage = () => {
                   className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   value={checkoutForm.orderNotice}
                   onChange={(e) =>
-                    setCheckoutForm({ ...checkoutForm, orderNotice: e.target.value })
+                    setCheckoutForm({
+                      ...checkoutForm,
+                      orderNotice: e.target.value,
+                    })
                   }
                 />
               </div>
