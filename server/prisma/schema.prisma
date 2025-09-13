@@ -44,22 +44,38 @@ model User {
 }
 
 model Customer_order {
-  id          String                   @id @default(uuid())
-  name        String
-  lastname    String
-  phone       String
-  email       String
-  company     String
-  adress      String
-  apartment   String
-  postalCode  String
-  dateTime    DateTime?                @default(now())
-  status      String
-  city        String
-  country     String
-  orderNotice String?
-  total       Int
-  products    customer_order_product[]
+  id            String                   @id @default(uuid())
+  name          String
+  lastname      String
+
+  // Phones & email/company
+  phone1        String
+  phone2        String?
+  email         String
+  company       String?
+
+  // Address block 1
+  adress1       String
+  apartment1    String
+  postalCode1   String
+  city1         String
+  country1      String
+
+  // Address block 2 (optional)
+  adress2       String?
+  apartment2    String?
+  postalCode2   String?
+  city2         String?
+  country2      String?
+
+  sameAddress   Boolean                  @default(true)
+
+  dateTime      DateTime?                @default(now())
+  status        String
+  orderNotice   String?
+  total         Int
+
+  products      customer_order_product[]
 }
 
 model customer_order_product {

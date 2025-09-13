@@ -6,35 +6,60 @@ async function createCustomerOrder(request, response) {
     const {
       name,
       lastname,
-      phone,
+      phone1,
+      phone2,
       email,
       company,
-      adress,
-      apartment,
-      postalCode,
+      adress1,
+      apartment1,
+      postalCode1,
+      city1,
+      country1,
+      adress2,
+      apartment2,
+      postalCode2,
+      city2,
+      country2,
+      sameAddress,
       status,
-      city,
-      country,
       orderNotice,
       total,
     } = request.body;
+
+    // minimal validation
+    if (
+      !name || !lastname || !phone1 || !email ||
+      !adress1 || !apartment1 || !postalCode1 || !city1 || !country1 ||
+      !status || typeof total !== "number"
+    ) {
+      return response.status(400).json({ error: "Missing required fields" });
+    }
+
     const corder = await prisma.customer_order.create({
       data: {
         name,
         lastname,
-        phone,
+        phone1,
+        phone2,
         email,
         company,
-        adress,
-        apartment,
-        postalCode,
+        adress1,
+        apartment1,
+        postalCode1,
+        city1,
+        country1,
+        adress2,
+        apartment2,
+        postalCode2,
+        city2,
+        country2,
+        sameAddress: typeof sameAddress === "boolean" ? sameAddress : true,
         status,
-        city,
-        country,
         orderNotice,
         total,
       },
     });
+
     return response.status(201).json(corder);
   } catch (error) {
     console.error("Error creating order:", error);

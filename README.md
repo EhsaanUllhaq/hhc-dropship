@@ -155,6 +155,14 @@ npm install
 npx prisma migrate dev
 ```
 
+<p>10.1. To delete the db</p>
+```
+npx prisma format
+npx prisma migrate reset
+# answer "y" to reset; give a name when prompted, e.g. "init_clean_schema"
+```
+<span>(If reset doesn’t ask for a name, then do: npx prisma migrate dev --name init_clean_schema after.)</span>
+
 <p>11. Next is to insert demo data. To do it you need to go to the server/utills folder and call insertDemoData.js:</p>
 
 ```
